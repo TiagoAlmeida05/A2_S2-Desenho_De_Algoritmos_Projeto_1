@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <map>
 #include "Graph.h"
 
 using namespace std;
@@ -51,8 +52,10 @@ void displayMenu(){
 void loadGraphFromFile(){
     string filename;
     string line;
+    Graph <int> g;
+    map<string, int> codeToId;
 
-    cout << "Enter File Name With Edges:  \n";
+    cout << "Enter File Name With Nods:  \n";
     cin >> filename;
 
     ifstream inputfile(filename);
@@ -61,7 +64,22 @@ void loadGraphFromFile(){
         cout <<"Error: Could not open " << filename << "!\n";
     }
     getline(inputfile, line);
+    while (getline(inputfile, line)){
+        stringstream ss(line);
+        string location, idst, code, parkingst;
+        
+        getline(ss, location, ',');
+        getline(ss, idst, ',');
+        getline(ss, code, ',');
+        getline(ss, parkingst, ',');
+        
+        int id = stoi(idst);
+        bool parking = (parkingst == "1");
+        g.addVertex(id);
 
+        g[id].setPark(parking);
+        g[id].setCode(code);
+    }
 
 }
 

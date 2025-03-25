@@ -85,18 +85,21 @@ public:
     Edge(Vertex<T> *orig, Vertex<T> *dest, double w);
 
     Vertex<T> * getDest() const;
-    double getWeight() const;
+    double getDWeight() const;
     bool isSelected() const;
     Vertex<T> * getOrig() const;
     Edge<T> *getReverse() const;
     double getFlow() const;
+    double getWWeight() const;
 
     void setSelected(bool selected);
     void setReverse(Edge<T> *reverse);
     void setFlow(double flow);
+    void setWWeight(double wweight);
 protected:
     Vertex<T> * dest; // destination vertex
-    double weight; // edge weight, can also be used for capacity
+    double dweight;   // edge weight, can also be used for capacity
+    double wweight;
 
     // auxiliary fields
     bool selected = false;
@@ -348,8 +351,13 @@ Vertex<T> * Edge<T>::getDest() const {
 }
 
 template <class T>
-double Edge<T>::getWeight() const {
-    return this->weight;
+double Edge<T>::getDWeight() const {
+    return this->Dweight;
+}
+
+template <class T>
+double Edge<T>::getWWeight() const {
+    return this->Wweight;
 }
 
 template <class T>
@@ -385,6 +393,11 @@ void Edge<T>::setReverse(Edge<T> *reverse) {
 template <class T>
 void Edge<T>::setFlow(double flow) {
     this->flow = flow;
+}
+
+template <class T>
+void Edge<T>::setWWeight(double wweight) {
+    this->wweight = wweight;
 }
 
 /********************** Graph  ****************************/
