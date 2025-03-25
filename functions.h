@@ -1,6 +1,8 @@
+#ifndef FUNCTIONS_H
+#define FUNCTIONS_H
+
 #include "Graph.h"
 #include "MutablePriorityQueue.h"
-#include "functions.h"
 
 using namespace std;
 
@@ -60,3 +62,5 @@ static std::vector<T> getPath(Graph<T> * g, const int &origin, const int &dest) 
     }
     return res;
 }
+
+#endif

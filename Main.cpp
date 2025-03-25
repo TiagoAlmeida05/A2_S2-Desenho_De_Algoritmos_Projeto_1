@@ -4,6 +4,8 @@
 #include <sstream>
 #include <map>
 #include "Graph.h"
+#include "functions.h"
+#include <vector>
 
 using namespace std;
 
@@ -40,7 +42,7 @@ void loadGraphFromFile(Graph <int>& g){
         codeToId[code]=id;
     }
 
-    cout << "Enter File Name With Nods:  \n";
+    cout << "Enter File Name With Edges:  \n";
     cin >> filename;
 
     ifstream inputfile2(filename);
@@ -72,7 +74,7 @@ void loadGraphFromFile(Graph <int>& g){
 }
 void displayMenu();
 void findRoute(Graph<int> &g);
-void batchMode();
+void batchMode(Graph<int> &g);
 
 int main() {
     char choice;
@@ -90,7 +92,7 @@ int main() {
                 findRoute(g);
                 break;
             case '3':
-                batchMode();
+                batchMode(g);
                 break;
             case '4':
                 cout << "Exiting Program... \n";
@@ -114,21 +116,32 @@ void displayMenu(){
 
 
 void findRoute(Graph<int> &g){
-    for(auto i=1;i<g.getNumVertex();i++) {
-        Vertex<int>* v=  g.findVertex(i);
-        v->setVisited(false);
-    }
-    for(auto i=1;i<g.getNumVertex();i++) {
-        Vertex<int>* v=  g.findVertex(i);
-        if(!v->isVisited()) {
-            for(auto e: v->getAdj()) {
-                cout << e->getDWeight();
-            }
+    string mode, source, destination;
+    vector<int> v;
+
+    cout << "Mode:";
+    cin >> mode;
+    cout << "Source:";
+    cin >> source;
+    cout << "Destinations:";
+    cin >> destination;
+
+    if(mode == "driving"){
+        v = getPath(&g, 1, 2);
+    }else{
+        if(mode == "driving-walking"){
+
+        }else{
+            cout << "Mode not valid!";
         }
     }
 
+    for(size_t i = 0; i < v.size(); i++){
+        cout << v[i] << " ";
+    }
+    
 }
 
-void batchMode(){
+void batchMode(Graph<int> &g){
 
 }
