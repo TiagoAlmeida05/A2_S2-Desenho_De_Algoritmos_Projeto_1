@@ -1,4 +1,8 @@
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
+#include "Graph.h"
 
 using namespace std;
 
@@ -45,6 +49,19 @@ void displayMenu(){
 }
 
 void loadGraphFromFile(){
+    string filename;
+    string line;
+
+    cout << "Enter File Name With Edges:  \n";
+    cin >> filename;
+
+    ifstream inputfile(filename);
+
+    if(!inputfile){
+        cout <<"Error: Could not open " << filename << "!\n";
+    }
+    getline(inputfile, line);
+
 
 }
 
