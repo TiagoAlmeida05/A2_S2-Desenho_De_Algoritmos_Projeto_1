@@ -21,7 +21,7 @@ class Edge;
 template <class T>
 class Vertex {
 public:
-    Vertex(T in, T code, T park);
+    Vertex(T in);
     bool operator<(Vertex<T> & vertex) const; // // required by MutablePriorityQueue
 
     T getInfo() const;
@@ -159,7 +159,7 @@ void deleteMatrix(double **m, int n);
 /************************* Vertex  **************************/
 
 template <class T>
-Vertex<T>::Vertex(T in, T code, T park): info(in), code(code), park(park)  {}
+Vertex<T>::Vertex(T in): info(in)  {}
 /*
  * Auxiliary function to add an outgoing edge to a vertex (this),
  * with a given destination vertex (d) and edge weight (w).
@@ -343,7 +343,7 @@ void Vertex<T>::deleteEdge(Edge<T> *edge) {
 /********************** Edge  ****************************/
 
 template <class T>
-Edge<T>::Edge(Vertex<T> *orig, Vertex<T> *dest, double w): orig(orig), dest(dest), weight(w) {}
+Edge<T>::Edge(Vertex<T> *orig, Vertex<T> *dest, double w): orig(orig), dest(dest), dweight(w) {}
 
 template <class T>
 Vertex<T> * Edge<T>::getDest() const {

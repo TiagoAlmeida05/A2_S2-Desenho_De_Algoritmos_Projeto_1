@@ -76,10 +76,16 @@ void loadGraphFromFile(){
         int id = stoi(idst);
         bool parking = (parkingst == "1");
         g.addVertex(id);
+        Vertex<int>* v = g.findVertex(id);
 
-        g[id].setPark(parking);
-        g[id].setCode(code);
+        v->setPark(parking);
+        v->setCode(code);
+        codeToId[code] = id;
     }
+    cout << "Nods added!\n";
+    cout << "Enter File Name With Nods:  \n";
+    cin >> filename;
+    
 
 }
 
