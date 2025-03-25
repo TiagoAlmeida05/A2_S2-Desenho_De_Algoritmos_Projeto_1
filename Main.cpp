@@ -67,8 +67,12 @@ void loadGraphFromFile(Graph <int>& g){
         if(driving!="X") {
             int d= stoi(driving);
             g.addEdge(newid1,newid2,d,w);
+            g.addEdge(newid2,newid1,d,w);
         }
-        else g.addEdge(newid1,newid2,-1,w);
+        else {
+            g.addEdge(newid1,newid2,INF,w);
+            g.addEdge(newid2,newid1,INF,w);
+        }
         
     }
 }
@@ -87,6 +91,7 @@ int main() {
         switch(choice){
             case '1':
                 loadGraphFromFile(g);
+                cout << "Graph has " << g.getNumVertex() << " vertices." << endl;
                 break;
             case '2':
                 findRoute(g);
@@ -117,27 +122,35 @@ void displayMenu(){
 
 void findRoute(Graph<int> &g){
     string mode, source, destination;
-    vector<int> v;
+    vector<int> path;
 
     cout << "Mode:";
     cin >> mode;
     cout << "Source:";
     cin >> source;
-    cout << "Destinations:";
+    cout << "Destination:";
     cin >> destination;
-
+    int s= stoi(source);
+    int d= stoi(destination);
     if(mode == "driving"){
-        v = getPath(&g, 1, 2);
+        dijkstra(&g,s);
+        path = getPath(&g, s, d);
+        Vertex<int>* v = g.findVertex(d);
+        double dist= v->getDist();
+        if (path.empty()) cout << "none";
+    else {
+        for (size_t i = 0; i < path.size(); i++) {
+            cout << path[i];
+            if (i != path.size() - 1) cout << ","; 
+        }
+        cout << '('<<dist<<')'<<endl;
+    }
     }else{
         if(mode == "driving-walking"){
 
         }else{
             cout << "Mode not valid!";
         }
-    }
-
-    for(size_t i = 0; i < v.size(); i++){
-        cout << v[i] << " ";
     }
     
 }

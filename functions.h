@@ -1,36 +1,51 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
+#include <iostream>
 #include "Graph.h"
 #include "MutablePriorityQueue.h"
 
 using namespace std;
 
 template <class T>
-bool relax(Edge<T> *edge) { // d[u] + w(u,v) < d[v]
-    if (edge->getOrig()->getDist() + edge->getWeight() < edge->getDest()->getDist()) { // we have found a better way to reach v
-        edge->getDest()->setDist(edge->getOrig()->getDist() + edge->getWeight()); // d[v] = d[u] + w(u,v)
-        edge->getDest()->setPath(edge); // set the predecessor of v to u; in this case the edge from u to v
+bool relax(Edge<T> *edge) {
+    double newDist = edge->getOrig()->getDist() + edge->getDWeight();
+    if (newDist < edge->getDest()->getDist()) { // Only update if new distance is shorter
+        cout << "Updating vertex " << edge->getDest()->getInfo() << " from " 
+             << edge->getDest()->getDist() << " to " << newDist << endl;
+
+        edge->getDest()->setDist(newDist);
+        edge->getDest()->setPath(edge); 
         return true;
     }
     return false;
 }
 
+
 template <class T>
 void dijkstra(Graph<T> * g, const int &origin) {
     // Initialize the vertices
-    for(auto v : g->getVertexSet()) {
+    for(Vertex<T>* v : g->getVertexSet()) {
         v->setDist(INF);
         v->setPath(nullptr);
     }
-    auto s = g->findVertex(origin);
+    for(Vertex<T>* v : g->getVertexSet()) {
+        cout << "Vertex " << v->getInfo() << " initialized with dist: " << v->getDist() << endl;
+    }
+
+    Vertex<T>* s = g->findVertex(origin);
+    if (!s) {
+        cerr << "Error: Origin vertex not found!" << endl;
+        return;
+    }
+
     s->setDist(0);
 
     MutablePriorityQueue<Vertex<T>> q;
     q.insert(s);
     while( ! q.empty() ) {
-        auto v = q.extractMin();
-        for(auto e : v->getAdj()) {
+        Vertex<T>* v = q.extractMin();
+        for(Edge<T>* e : v->getAdj()) {
             auto oldDist = e->getDest()->getDist();
             if (relax(e)) {
                 if (oldDist == INF) {
@@ -47,7 +62,7 @@ void dijkstra(Graph<T> * g, const int &origin) {
 template <class T>
 static std::vector<T> getPath(Graph<T> * g, const int &origin, const int &dest) {
     std::vector<T> res;
-    auto v = g->findVertex(dest);
+    Vertex<T>* v = g->findVertex(dest);
     if (v == nullptr || v->getDist() == INF) { // missing or disconnected
         return res;
     }
