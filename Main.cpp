@@ -13,6 +13,8 @@ void loadGraphFromFile(Graph<int> &g);
 void displayMenu();
 void findRoute(Graph<int> &g);
 void batchMode(Graph<int> &g);
+void avoidNodesAndSegments(Graph<int> &g, string avoidN, string avoidS, const int &source, const int &destination);
+void simplePathFinder(Graph<int> &g, const int &source, const int &destination);
 
 int main()
 {
@@ -137,9 +139,8 @@ void findRoute(Graph<int> &g)
         k->setVisited(false);
     }
 
-    char h;
     int source, destination;
-    string mode, avoidN, temp;
+    string mode, avoidN, temp, avoidS;
     vector<int> path1, path2;
 
     cout << "Mode:";
@@ -149,47 +150,71 @@ void findRoute(Graph<int> &g)
     cout << "Destination:";
     cin >> destination;
     cout << "AvoidNods:";
-    cin >> avoidN;
+    cin.ignore();
+    getline(cin, avoidN);
     cout << endl;
 
-    if (avoidN != "")
+    if (mode == "driving")
     {
-        stringstream ss(avoidN);
+        if (avoidN != "" || avoidS != "")
+        {
+            avoidNodesAndSegments(g, avoidN, avoidS, source, destination);
+        }else{
+            simplePathFinder(g, source, destination);            
+        }
+
+    }
+    else
+    {
+        if (mode == "driving-walking")
+        {
+        }
+        else
+        {
+            cout << "Mode not valid!";
+        }
+    }
+}
+
+void batchMode(Graph<int> &g)
+{
+}
+
+void avoidNodesAndSegments(Graph<int> &g, string avoidN, string avoidS, const int &source, const int &destination)
+{
+    string temp;
+    stringstream ss(avoidN);
+    vector<int> path;
         while (getline(ss, temp, ','))
         {
             Vertex<int> *h = g.findVertex(stoi(temp));
             h->setVisited(true);
         }
         dijkstra(&g, source);
-        path1 = getPath(&g, source, destination);
-        Vertex<int> *v1 = g.findVertex(destination);
-        double dist1 = v1->getDist();
+        path = getPath(&g, source, destination);
+        Vertex<int> *v = g.findVertex(destination);
+        double dist = v->getDist();
         cout << "Source:" << source << endl
              << "Destination:" << destination << endl;
         cout << "RestrictedDrivingRoute:";
-        if (path1.empty())
+        if (path.empty())
             cout << "none";
         else
         {
-            for (size_t i = 0; i < path1.size(); i++)
+            for (size_t i = 0; i < path.size(); i++)
             {
-                cout << path1[i];
-                if (i != path1.size() - 1)
+                cout << path[i];
+                if (i != path.size() - 1)
                     cout << ",";
-                if (i > 0 && i < path1.size())
-                {
-                    Vertex<int> *h = g.findVertex(path1[i]);
-                    h->setVisited(true);
-                }
             }
-            cout << '(' << dist1 << ')' << endl;
+            cout << '(' << dist << ')' << endl;
         }
-    }
-    else
-    {
-        if (mode == "driving")
-        {
-            dijkstra(&g, source);
+}
+
+void simplePathFinder(Graph<int> &g, const int &source, const int &destination)
+{
+    vector<int> path1, path2;
+    dijkstra(&g, source);
             path1 = getPath(&g, source, destination);
             Vertex<int> *v1 = g.findVertex(destination);
             double dist1 = v1->getDist();
@@ -232,20 +257,4 @@ void findRoute(Graph<int> &g)
                 }
                 cout << '(' << dist2 << ')' << endl;
             }
-        }
-        else
-        {
-            if (mode == "driving-walking")
-            {
-            }
-            else
-            {
-                cout << "Mode not valid!";
-            }
-        }
-    }
-}
-
-void batchMode(Graph<int> &g)
-{
 }
