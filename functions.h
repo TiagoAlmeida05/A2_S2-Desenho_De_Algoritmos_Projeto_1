@@ -11,8 +11,6 @@ template <class T>
 bool relax(Edge<T> *edge) {
     double newDist = edge->getOrig()->getDist() + edge->getDWeight();
     if (newDist < edge->getDest()->getDist()) { // Only update if new distance is shorter
-        cout << "Updating vertex " << edge->getDest()->getInfo() << " from " 
-             << edge->getDest()->getDist() << " to " << newDist << endl;
 
         edge->getDest()->setDist(newDist);
         edge->getDest()->setPath(edge); 
@@ -29,9 +27,6 @@ void dijkstra(Graph<T> * g, const int &origin) {
         v->setDist(INF);
         v->setPath(nullptr);
     }
-    for(Vertex<T>* v : g->getVertexSet()) {
-        cout << "Vertex " << v->getInfo() << " initialized with dist: " << v->getDist() << endl;
-    }
 
     Vertex<T>* s = g->findVertex(origin);
     if (!s) {
@@ -46,6 +41,7 @@ void dijkstra(Graph<T> * g, const int &origin) {
     while( ! q.empty() ) {
         Vertex<T>* v = q.extractMin();
         for(Edge<T>* e : v->getAdj()) {
+            if(v->isVisited()) continue;
             auto oldDist = e->getDest()->getDist();
             if (relax(e)) {
                 if (oldDist == INF) {
@@ -55,7 +51,7 @@ void dijkstra(Graph<T> * g, const int &origin) {
                     q.decreaseKey(e->getDest());
                 }
             }
-        }
+        }  
     }
 }
 
@@ -67,9 +63,10 @@ static std::vector<T> getPath(Graph<T> * g, const int &origin, const int &dest) 
         return res;
     }
     res.push_back(v->getInfo());
-    while(v->getPath() != nullptr) {
+    while(v->getPath() != nullptr){
         v = v->getPath()->getOrig();
-        res.push_back(v->getInfo());
+        if(v->isVisited()) continue;
+        res.push_back(v->getInfo());        
     }
     reverse(res.begin(), res.end());
     if(res.empty() || res[0] != origin) {
