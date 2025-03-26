@@ -139,7 +139,7 @@ void findRoute(Graph<int> &g)
         k->setVisited(false);
     }
 
-    int source, destination;
+    int source, destination, includeN;
     string mode, avoidN, temp, avoidS;
     vector<int> path1, path2;
 
@@ -149,13 +149,18 @@ void findRoute(Graph<int> &g)
     cin >> source;
     cout << "Destination:";
     cin >> destination;
-    cout << "AvoidNods:";
-    cin.ignore();
-    getline(cin, avoidN);
-    cout << endl;
 
     if (mode == "driving")
     {
+        cout << "AvoidNods:";
+        cin.ignore();
+        getline(cin, avoidN);
+        cout << "AvoidSegments:";
+        cin.ignore();
+        getline(cin, avoidS);
+        cout << "IncludeNode:";
+        cin >> includeN;
+        cout << endl;
         if (avoidN != "" || avoidS != "")
         {
             avoidNodesAndSegments(g, avoidN, avoidS, source, destination);
@@ -189,25 +194,6 @@ void avoidNodesAndSegments(Graph<int> &g, string avoidN, string avoidS, const in
         {
             Vertex<int> *h = g.findVertex(stoi(temp));
             h->setVisited(true);
-        }
-        dijkstra(&g, source);
-        path = getPath(&g, source, destination);
-        Vertex<int> *v = g.findVertex(destination);
-        double dist = v->getDist();
-        cout << "Source:" << source << endl
-             << "Destination:" << destination << endl;
-        cout << "RestrictedDrivingRoute:";
-        if (path.empty())
-            cout << "none";
-        else
-        {
-            for (size_t i = 0; i < path.size(); i++)
-            {
-                cout << path[i];
-                if (i != path.size() - 1)
-                    cout << ",";
-            }
-            cout << '(' << dist << ')' << endl;
         }
 }
 
@@ -257,4 +243,44 @@ void simplePathFinder(Graph<int> &g, const int &source, const int &destination)
                 }
                 cout << '(' << dist2 << ')' << endl;
             }
+}
+
+void includeNode(Graph<int> &g, const int &source, const int &destination, const int includeN)
+{
+    vector<int> path1, path2;
+    dijkstra(&g, source);
+            path1 = getPath(&g, source, includeN);
+            Vertex<int> *v1 = g.findVertex(includeN);
+            double dist1 = v1->getDist();
+            for (size_t i = 0; i < path1.size(); i++)
+                {
+                    cout << path1[i];
+                    if (i != path1.size() - 1)
+                        cout << ",";
+                    if (i > 0 && i < path1.size())
+                    {
+                        Vertex<int> *h = g.findVertex(path1[i]);
+                        h->setVisited(true);
+                    }
+                }
+
+            Vertex<int> *v2 = g.findVertex(destination);
+            dijkstra(&g, includeN);
+            path2 = getPath(&g, includeN, destination);
+            double dist2 = v2->getDist();
+
+
+            if (path2.empty())
+                cout << "none";
+            else
+            {
+                for (size_t i = 0; i < path2.size(); i++)
+                {
+                    cout << path2[i];
+                    if (i != path2.size() - 1)
+                        cout << ",";
+                }
+                cout << '(' << dist2 << ')' << endl;
+            }
+
 }
