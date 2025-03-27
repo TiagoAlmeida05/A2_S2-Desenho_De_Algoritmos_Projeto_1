@@ -41,6 +41,7 @@ void dijkstra(Graph<T> * g, const int &origin) {
     while( ! q.empty() ) {
         Vertex<T>* v = q.extractMin();
         for(Edge<T>* e : v->getAdj()) {
+            if(e->isSelected()) continue;
             if(v->isVisited()) continue;
             auto oldDist = e->getDest()->getDist();
             if (relax(e)) {

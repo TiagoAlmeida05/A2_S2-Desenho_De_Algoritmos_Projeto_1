@@ -14,9 +14,10 @@ void displayMenu();
 void findRoute(Graph<int> &g);
 void batchMode(Graph<int> &g);
 void avoidNodesAndSegments(Graph<int> &g, string avoidN, string avoidS, const int &source, const int &destination);
-void simplePathFinder(Graph<int> &g, const int &source, const int &destination);
+void drivingMode(Graph<int> &g, const int &source, const int &destination);
 void restrictedRoute(Graph<int> &g, const int &source, const int &destination);
 void includeNode(Graph<int> &g, const int &source, const int &destination, string includeN);
+void drivingWalkingMode(Graph<int> &g, const int &source, const int &destination, string maxWT);
 
 int main()
 {
@@ -139,10 +140,14 @@ void findRoute(Graph<int> &g)
     for (Vertex<int> *k : g.getVertexSet())
     {
         k->setVisited(false);
+        for (Edge<int> *e : k->getAdj())
+        {
+            e->setSelected(false);
+        }
     }
 
     int source, destination;
-    string mode, avoidN, temp, avoidS, includeN;
+    string mode, avoidN, temp, avoidS, includeN, maxWT;
     vector<int> path1, path2;
 
     cout << "Mode:";
@@ -177,13 +182,27 @@ void findRoute(Graph<int> &g)
         }
         else
         {
-            simplePathFinder(g, source, destination);
+            drivingMode(g, source, destination);
         }
     }
     else
     {
         if (mode == "driving-walking")
         {
+            cout << "MaxWalkTime:";
+            cin.ignore();
+            getline(cin, maxWT);
+            cout << "AvoidNodes:";
+            getline(cin, avoidN);
+            cout << "AvoidSegments:";
+            getline(cin, avoidS);
+            cout << endl;
+            if (avoidN != "" || avoidS != ""){
+                avoidNodesAndSegments(g, avoidN, avoidS, source, destination);
+                drivingWalkingMode(g, source, destination, maxWT);
+            }else{
+                drivingWalkingMode(g, source, destination, maxWT);
+            }
         }
         else
         {
@@ -198,17 +217,31 @@ void batchMode(Graph<int> &g)
 
 void avoidNodesAndSegments(Graph<int> &g, string avoidN, string avoidS, const int &source, const int &destination)
 {
-    string temp;
+    string temp, orig, dest;
     stringstream ss(avoidN);
-    vector<int> path;
     while (getline(ss, temp, ','))
     {
         Vertex<int> *h = g.findVertex(stoi(temp));
         h->setVisited(true);
     }
+
+    stringstream sa(avoidS);
+    while (getline(sa, temp, '('))
+    {
+        getline(sa, orig, ',');
+        getline(sa, dest, ')');
+        Vertex<int> *v = g.findVertex(stoi(orig));
+        for (Edge<int> *e : v->getAdj())
+        {
+            if (e->getDest()->getInfo() == stoi(dest))
+            {
+                e->setSelected(true);
+            }
+        }
+    }
 }
 
-void simplePathFinder(Graph<int> &g, const int &source, const int &destination)
+void drivingMode(Graph<int> &g, const int &source, const int &destination)
 {
     vector<int> path1, path2;
     dijkstra(&g, source);
@@ -227,7 +260,7 @@ void simplePathFinder(Graph<int> &g, const int &source, const int &destination)
             cout << path1[i];
             if (i != path1.size() - 1)
                 cout << ",";
-            if (i > 0 && i < path1.size()-1)
+            if (i > 0 && i < path1.size() - 1)
             {
                 Vertex<int> *h = g.findVertex(path1[i]);
                 h->setVisited(true);
@@ -258,7 +291,7 @@ void simplePathFinder(Graph<int> &g, const int &source, const int &destination)
 
 void includeNode(Graph<int> &g, const int &source, const int &destination, string includeN)
 {
-    
+
     vector<int> path1, path2;
     int nod = stoi(includeN);
     dijkstra(&g, source);
@@ -266,27 +299,32 @@ void includeNode(Graph<int> &g, const int &source, const int &destination, strin
     Vertex<int> *v1 = g.findVertex(nod);
     double dist1 = v1->getDist();
     cout << "RestrictedDrivingRoute:";
-    for (size_t i = 0; i < path1.size(); i++)
+    if (path1.empty())
+        cout << "none";
+    else
     {
-        cout << path1[i];
-        cout << ",";
-        if (i < path1.size()-1)
+        for (size_t i = 0; i < path1.size(); i++)
         {
-            Vertex<int> *h = g.findVertex(path1[i]);
-            h->setVisited(true);
-        }
-    }
-    dijkstra(&g, nod);
-    path2 = getPath(&g, nod, destination);
-    Vertex<int> *v2 = g.findVertex(destination);
-    double dist2 = v2->getDist();
-    for (size_t i = 1; i < path2.size(); i++)
-    {
-        cout << path2[i];
-        if (i != path2.size() - 1)
+            cout << path1[i];
             cout << ",";
+            if (i < path1.size() - 1)
+            {
+                Vertex<int> *h = g.findVertex(path1[i]);
+                h->setVisited(true);
+            }
+        }
+        dijkstra(&g, nod);
+        path2 = getPath(&g, nod, destination);
+        Vertex<int> *v2 = g.findVertex(destination);
+        double dist2 = v2->getDist();
+        for (size_t i = 1; i < path2.size(); i++)
+        {
+            cout << path2[i];
+            if (i != path2.size() - 1)
+                cout << ",";
+        }
+        cout << '(' << dist2 + dist1 << ')' << endl;
     }
-    cout << '(' << dist2 + dist1  << ')' << endl;
 }
 
 void restrictedRoute(Graph<int> &g, const int &source, const int &destination)
@@ -310,5 +348,69 @@ void restrictedRoute(Graph<int> &g, const int &source, const int &destination)
                 cout << ",";
         }
         cout << '(' << dist << ')' << endl;
+    }
+}
+
+void drivingWalkingMode(Graph<int> &g, const int &source, const int &destination, string maxWT){
+    vector<int> path;
+    int parkingProx, j = 0;
+    double walkingTime= 0;
+    dijkstra(&g, source);
+    path = getPath(&g, source, destination);
+    cout << "Source:" << source << endl
+         << "Destination:" << destination << endl;
+    cout << "DrivingRoute:";
+    if (path.empty()){
+        cout<<endl;
+        cout<<"ParkingNode:"<<endl;
+        cout<< "WalkingRoute:"<< endl;
+        cout<< "TotalTime:"<<endl;
+        cout<< "Message: No path was found";
+    }
+    else
+    {
+        for (size_t i = 0; i < path.size()-1; i++)
+        {
+            if(g.findVertex(path[i])->hasPark() == true){
+                parkingProx = path[i];
+            }     
+        }
+        for (size_t i = 0; i < path.size()-1; i++)
+        {
+            if(path[i] == parkingProx){
+                j = 1;
+            }
+            if(j ==1){
+                Vertex<int> *v = g.findVertex(path[i]);
+                for (Edge<int> *e : v->getAdj()){
+                    if(e->getDest()->getInfo() == path[i+1]){
+                        walkingTime = walkingTime + e->getWWeight();
+                    }
+                }
+            }
+        }
+        Vertex<int> *v1 = g.findVertex(parkingProx);
+        double dist = v1->getDist();
+        if(stoi(maxWT) < walkingTime){
+            cout<<endl;
+            cout<<"ParkingNode:"<<endl;
+            cout<< "WalkingRoute:"<< endl;
+            cout<< "TotalTime:"<<endl;
+            cout<< "Message: No possible route with max. walking time of "<< maxWT << " minutes."<< endl;
+        }else{
+            for (size_t i = 0; i < path.size(); i++){
+                if(path[i] == parkingProx){
+                        cout << path[i];
+                        cout << '(' << dist << ')' << endl;
+                        cout << "ParkingNode:" << path[i] << endl;
+                        cout << "WalkingRoute:";                        
+                }
+                cout << path[i];
+                if (i != path.size() - 1)
+                    cout << ",";
+            }
+            cout << "(" << walkingTime << ")"<< endl;
+            cout << "TotalTime:" << walkingTime + dist<< endl;
+        }       
     }
 }
