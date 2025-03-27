@@ -31,7 +31,9 @@ public:
     bool isProcessing() const;
     unsigned int getIndegree() const;
     double getDist() const;
+    double getWDist() const;
     Edge<T> *getPath() const;
+    Edge<T> *getWPath() const;
     std::vector<Edge<T> *> getIncoming() const;
 
     void setInfo(T info);
@@ -52,7 +54,9 @@ public:
 
     void setIndegree(unsigned int indegree);
     void setDist(double dist);
+    void setWDist(double wdist);
     void setPath(Edge<T> *path);
+    void setWPath(Edge<T> *wpath);
     Edge<T> * addEdge(Vertex<T> *dest, double dw, double ww);
     bool removeEdge(T in);
     void removeOutgoingEdges();
@@ -68,7 +72,9 @@ protected:
     int low = -1, num = -1; // used by SCC Tarjan
     unsigned int indegree; // used by topsort
     double dist = 0;
+    double wdist=0;
     Edge<T> *path = nullptr;
+    Edge<T> *wpath = nullptr;
     std :: string code = "";
     bool park = false;
 
@@ -275,9 +281,19 @@ double Vertex<T>::getDist() const {
     return this->dist;
 }
 
+
+template <class T>
+double Vertex<T>::getDist() const {
+    return this->wdist;
+}
+
 template <class T>
 Edge<T> *Vertex<T>::getPath() const {
     return this->path;
+}
+template <class T>
+Edge<T> *Vertex<T>::getWPath() const {
+    return this->wpath;
 }
 
 template <class T>
@@ -321,8 +337,18 @@ void Vertex<T>::setDist(double dist) {
 }
 
 template <class T>
+void Vertex<T>::setWDist(double wdist) {
+    this->wdist = wdist;
+}
+
+template <class T>
 void Vertex<T>::setPath(Edge<T> *path) {
     this->path = path;
+}
+
+template <class T>
+void Vertex<T>::setWPath(Edge<T> *path) {
+    this->wpath = wpath;
 }
 
 template <class T>

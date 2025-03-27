@@ -351,66 +351,67 @@ void restrictedRoute(Graph<int> &g, const int &source, const int &destination)
     }
 }
 
-void drivingWalkingMode(Graph<int> &g, const int &source, const int &destination, string maxWT){
-    vector<int> path;
-    int parkingProx, j = 0;
-    double walkingTime= 0;
+void drivingWalkingMode(Graph<int> &g, const int &source, const int &destination, string maxWT) {
+    vector<int> bestDrivingPath, bestWalkingPath;
+    double bestTotalTime = INF, bestWalkingTime = -1;
+    int bestParkingNode = -1;
+    int maxWalkingTime = stoi(maxWT);
+
     dijkstra(&g, source);
-    path = getPath(&g, source, destination);
-    cout << "Source:" << source << endl
-         << "Destination:" << destination << endl;
-    cout << "DrivingRoute:";
-    if (path.empty()){
-        cout<<endl;
-        cout<<"ParkingNode:"<<endl;
-        cout<< "WalkingRoute:"<< endl;
-        cout<< "TotalTime:"<<endl;
-        cout<< "Message: No path was found";
-    }
-    else
-    {
-        for (size_t i = 0; i < path.size()-1; i++)
-        {
-            if(g.findVertex(path[i])->hasPark() == true){
-                parkingProx = path[i];
-            }     
-        }
-        for (size_t i = 0; i < path.size()-1; i++)
-        {
-            if(path[i] == parkingProx){
-                j = 1;
-            }
-            if(j ==1){
-                Vertex<int> *v = g.findVertex(path[i]);
-                for (Edge<int> *e : v->getAdj()){
-                    if(e->getDest()->getInfo() == path[i+1]){
-                        walkingTime = walkingTime + e->getWWeight();
-                    }
+
+    for (Vertex<int>* v : g.getVertexSet()) {
+        if (v->hasPark() && v->getDist() < INF) { // Valid parking node
+            int parkingNode = v->getInfo();
+            double drivingTime = v->getDist();
+
+            // Step 3: Run Dijkstra for walking mode from parking to destination
+            dijkstra(&g, parkingNode,1);
+            vector<int> walkingPath = getPath(&g, parkingNode, destination,1);
+            Vertex<int>* destVertex = g.findVertex(destination);
+
+            if (walkingPath.empty() || destVertex->getWDist() >= INF) continue; // No valid walking route
+
+            double walkingTime = destVertex->getWDist();
+            double totalTime = drivingTime + walkingTime;
+
+            // Step 4: Select the best parking node and route
+            if (walkingTime <= maxWalkingTime) {
+                if (totalTime < bestTotalTime || 
+                   (totalTime == bestTotalTime && walkingTime > bestWalkingTime)) {
+                    bestTotalTime = totalTime;
+                    bestWalkingTime = walkingTime;
+                    bestDrivingPath = getPath(&g, source, parkingNode);
+                    bestWalkingPath = walkingPath;
+                    bestParkingNode = parkingNode;
                 }
             }
         }
-        Vertex<int> *v1 = g.findVertex(parkingProx);
-        double dist = v1->getDist();
-        if(stoi(maxWT) < walkingTime){
-            cout<<endl;
-            cout<<"ParkingNode:"<<endl;
-            cout<< "WalkingRoute:"<< endl;
-            cout<< "TotalTime:"<<endl;
-            cout<< "Message: No possible route with max. walking time of "<< maxWT << " minutes."<< endl;
-        }else{
-            for (size_t i = 0; i < path.size(); i++){
-                if(path[i] == parkingProx){
-                        cout << path[i];
-                        cout << '(' << dist << ')' << endl;
-                        cout << "ParkingNode:" << path[i] << endl;
-                        cout << "WalkingRoute:";                        
-                }
-                cout << path[i];
-                if (i != path.size() - 1)
-                    cout << ",";
-            }
-            cout << "(" << walkingTime << ")"<< endl;
-            cout << "TotalTime:" << walkingTime + dist<< endl;
-        }       
     }
+
+    // Step 5: Output the result
+    cout << "Source: " << source << endl;
+    cout << "Destination: " << destination << endl;
+
+    if (bestParkingNode == -1) {
+        cout << "Message: No possible route with max. walking time of " << maxWT << " minutes." << endl;
+        return;
+    }
+
+    cout << "DrivingRoute: ";
+    for (size_t i = 0; i < bestDrivingPath.size(); i++) {
+        cout << bestDrivingPath[i];
+        if (i != bestDrivingPath.size() - 1) cout << ",";
+    }
+    cout << "(" << bestTotalTime - bestWalkingTime << ")" << endl;
+
+    cout << "ParkingNode: " << bestParkingNode << endl;
+
+    cout << "WalkingRoute: ";
+    for (size_t i = 0; i < bestWalkingPath.size(); i++) {
+        cout << bestWalkingPath[i];
+        if (i != bestWalkingPath.size() - 1) cout << ",";
+    }
+    cout << "(" << bestWalkingTime << ")" << endl;
+
+    cout << "TotalTime: " << bestTotalTime << endl;
 }
