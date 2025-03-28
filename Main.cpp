@@ -244,8 +244,8 @@ void avoidNodesAndSegments(Graph<int> &g, string avoidN, string avoidS, const in
 void drivingMode(Graph<int> &g, const int &source, const int &destination)
 {
     vector<int> path1, path2;
-    dijkstra(&g, source);
-    path1 = getPath(&g, source, destination);
+    dijkstra(&g, source,0);
+    path1 = getPath(&g, source, destination,0);
     Vertex<int> *v1 = g.findVertex(destination);
     double dist1 = v1->getDist();
     cout << "Source:" << source << endl
@@ -270,8 +270,8 @@ void drivingMode(Graph<int> &g, const int &source, const int &destination)
     }
 
     Vertex<int> *v2 = g.findVertex(destination);
-    dijkstra(&g, source);
-    path2 = getPath(&g, source, destination);
+    dijkstra(&g, source,0);
+    path2 = getPath(&g, source, destination,0);
     double dist2 = v2->getDist();
     cout << "AlternativeDrivingRoute:";
 
@@ -294,8 +294,8 @@ void includeNode(Graph<int> &g, const int &source, const int &destination, strin
 
     vector<int> path1, path2;
     int nod = stoi(includeN);
-    dijkstra(&g, source);
-    path1 = getPath(&g, source, nod);
+    dijkstra(&g, source,0);
+    path1 = getPath(&g, source, nod,0);
     Vertex<int> *v1 = g.findVertex(nod);
     double dist1 = v1->getDist();
     cout << "RestrictedDrivingRoute:";
@@ -313,8 +313,8 @@ void includeNode(Graph<int> &g, const int &source, const int &destination, strin
                 h->setVisited(true);
             }
         }
-        dijkstra(&g, nod);
-        path2 = getPath(&g, nod, destination);
+        dijkstra(&g, nod,0);
+        path2 = getPath(&g, nod, destination,0);
         Vertex<int> *v2 = g.findVertex(destination);
         double dist2 = v2->getDist();
         for (size_t i = 1; i < path2.size(); i++)
@@ -330,8 +330,8 @@ void includeNode(Graph<int> &g, const int &source, const int &destination, strin
 void restrictedRoute(Graph<int> &g, const int &source, const int &destination)
 {
     vector<int> path;
-    dijkstra(&g, source);
-    path = getPath(&g, source, destination);
+    dijkstra(&g, source,0);
+    path = getPath(&g, source, destination,0);
     Vertex<int> *v = g.findVertex(destination);
     double dist = v->getDist();
     cout << "Source:" << source << endl
@@ -357,20 +357,18 @@ void drivingWalkingMode(Graph<int> &g, const int &source, const int &destination
     int bestParkingNode = -1;
     int maxWalkingTime = stoi(maxWT);
 
-    dijkstra(&g, source);
-
+    dijkstra(&g, source,0);
+    
     for (Vertex<int>* v : g.getVertexSet()) {
         if (v->hasPark() && v->getDist() < INF) { // Valid parking node
             int parkingNode = v->getInfo();
             double drivingTime = v->getDist();
 
-            // Step 3: Run Dijkstra for walking mode from parking to destination
+            
             dijkstra(&g, parkingNode,1);
-            vector<int> walkingPath = getPath(&g, parkingNode, destination,1);
             Vertex<int>* destVertex = g.findVertex(destination);
 
-            if (walkingPath.empty() || destVertex->getWDist() >= INF) continue; // No valid walking route
-
+            if (destVertex == nullptr || destVertex->getWDist() >= INF) continue;
             double walkingTime = destVertex->getWDist();
             double totalTime = drivingTime + walkingTime;
 
@@ -380,8 +378,8 @@ void drivingWalkingMode(Graph<int> &g, const int &source, const int &destination
                    (totalTime == bestTotalTime && walkingTime > bestWalkingTime)) {
                     bestTotalTime = totalTime;
                     bestWalkingTime = walkingTime;
-                    bestDrivingPath = getPath(&g, source, parkingNode);
-                    bestWalkingPath = walkingPath;
+                    bestDrivingPath = getPath(&g, source, parkingNode,0);
+                    bestWalkingPath = getPath(&g, parkingNode, destination,1);
                     bestParkingNode = parkingNode;
                 }
             }
@@ -407,9 +405,12 @@ void drivingWalkingMode(Graph<int> &g, const int &source, const int &destination
     cout << "ParkingNode: " << bestParkingNode << endl;
 
     cout << "WalkingRoute: ";
-    for (size_t i = 0; i < bestWalkingPath.size(); i++) {
+    if (bestWalkingPath.empty()) cout << "none";
+    else {
+        for (size_t i = 0; i < bestWalkingPath.size(); i++) {
         cout << bestWalkingPath[i];
         if (i != bestWalkingPath.size() - 1) cout << ",";
+        }
     }
     cout << "(" << bestWalkingTime << ")" << endl;
 

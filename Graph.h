@@ -61,6 +61,8 @@ public:
     bool removeEdge(T in);
     void removeOutgoingEdges();
 
+    bool walking=false;
+
     friend class MutablePriorityQueue<Vertex>;
 protected:
     T info;                      // info node
@@ -218,7 +220,11 @@ void Vertex<T>::removeOutgoingEdges() {
 
 template <class T>
 bool Vertex<T>::operator<(Vertex<T> & vertex) const {
-    return this->dist < vertex.dist;
+    if (walking) {
+        return this->wdist < vertex.wdist; 
+    } else {
+        return this->dist < vertex.dist; 
+    }
 }
 
 template <class T>
@@ -283,7 +289,7 @@ double Vertex<T>::getDist() const {
 
 
 template <class T>
-double Vertex<T>::getDist() const {
+double Vertex<T>::getWDist() const {
     return this->wdist;
 }
 
@@ -347,7 +353,7 @@ void Vertex<T>::setPath(Edge<T> *path) {
 }
 
 template <class T>
-void Vertex<T>::setWPath(Edge<T> *path) {
+void Vertex<T>::setWPath(Edge<T> *wpath) {
     this->wpath = wpath;
 }
 

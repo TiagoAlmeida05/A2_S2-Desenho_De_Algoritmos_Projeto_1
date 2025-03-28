@@ -9,6 +9,7 @@ using namespace std;
 
 template <class T>
 bool relax(Edge<T> *edge,bool walking) {
+
     if(!walking) {
         double newDist = edge->getOrig()->getDist() + edge->getDWeight();
         if (newDist < edge->getDest()->getDist()) { // Only update if new distance is shorter
@@ -20,11 +21,11 @@ bool relax(Edge<T> *edge,bool walking) {
        
     }
     else {
-        double newDist = edge->getOrig()->getDist() + edge->getWWeight();
-        if (newDist < edge->getDest()->getDist()) { // Only update if new distance is shorter
+        double newDist = edge->getOrig()->getWDist() + edge->getWWeight();
+        if (newDist < edge->getDest()->getWDist()) { // Only update if new distance is shorter
 
-            edge->getDest()->setDist(newDist);
-            edge->getDest()->setPath(edge); 
+            edge->getDest()->setWDist(newDist);
+            edge->getDest()->setWPath(edge); 
             return true;
         }
     }
@@ -36,9 +37,15 @@ template <class T>
 void dijkstra(Graph<T> * g, const int &origin,bool walking) {
     // Initialize the vertices
     for(Vertex<T>* v : g->getVertexSet()) {
-        v->setDist(INF);
-        v->setPath(nullptr);
-        v->setWDist(INF);
+        v->walking=walking;
+        if(!walking){
+            v->setDist(INF);
+            v->setPath(nullptr);
+        }
+        else {
+            v->setWDist(INF);
+            v->setWPath(nullptr);
+        }
     }
 
     Vertex<T>* s = g->findVertex(origin);
@@ -46,19 +53,23 @@ void dijkstra(Graph<T> * g, const int &origin,bool walking) {
         cerr << "Error: Origin vertex not found!" << endl;
         return;
     }
-
-    s->setDist(0);
-    s->setWDist(0);
+    if(!walking)  s->setDist(0);
+    else s->setWDist(0);
 
     MutablePriorityQueue<Vertex<T>> q;
     q.insert(s);
     while( ! q.empty() ) {
         Vertex<T>* v = q.extractMin();
+       
+        if (v == nullptr) {
+            cerr << "Error: Extracted null vertex from priority queue!" << endl;
+            return;
+        }
         for(Edge<T>* e : v->getAdj()) {
             if(e->isSelected()) continue;
             if(v->isVisited()) continue;
-            if(!walking) auto oldDist = e->getDest()->getDist();
-            else auto oldDist = e->getDest()->getWDist();
+            double oldDist = walking ? e->getDest()->getWDist() : e->getDest()->getDist();
+
             if (relax(e,walking)) {
                 if (oldDist == INF) {
                     q.insert(e->getDest());
@@ -69,8 +80,8 @@ void dijkstra(Graph<T> * g, const int &origin,bool walking) {
             }
         }  
     }
+    
 }
-
 template <class T>
 static std::vector<T> getPath(Graph<T> * g, const int &origin, const int &dest,bool walking) {
     std::vector<T> res;
@@ -96,17 +107,20 @@ static std::vector<T> getPath(Graph<T> * g, const int &origin, const int &dest,b
             return res;
         }
         res.push_back(v->getInfo());
-        while(v->getWPath() != nullptr){
+        while (v != nullptr && v->getWPath() != nullptr) {
             v = v->getWPath()->getOrig();
-            if(v->isVisited()) continue;
-            res.push_back(v->getInfo());        
+            if (v->isVisited()) continue;
+            res.push_back(v->getInfo());
         }
+        
+        
         reverse(res.begin(), res.end());
         if(res.empty() || res[0] != origin) {
             std::cout << "Origin not found!!" << std::endl;
         }
         return res;
-    }
+    } 
 }
+
 
 #endif

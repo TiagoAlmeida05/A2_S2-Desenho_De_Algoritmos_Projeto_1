@@ -51,14 +51,23 @@ T* MutablePriorityQueue<T>::extractMin() {
     H[1] = H.back();
     H.pop_back();
     if(H.size() > 1) heapifyDown(1);
-    x->queueIndex = 0;
+    if (x != nullptr) {
+        x->queueIndex = 0;
+    } else {
+        std::cerr << "Error: Extracted min is a null pointer!" << std::endl;
+    }  
     return x;
 }
 
 template <class T>
 void MutablePriorityQueue<T>::insert(T *x) {
+    if (x == nullptr) {
+        std::cerr << "Error: Attempting to insert a null pointer!" << std::endl;
+        return;
+    }
     H.push_back(x);
-    heapifyUp(H.size()-1);
+    heapifyUp(H.size() - 1);
+    
 }
 
 template <class T>
