@@ -11,11 +11,44 @@
 
 using namespace std;
 
+/**
+ * @file Main.cpp
+ * @brief A program for route planning and analysis, including loading graph data, finding routes, 
+ * and processing routes in batch mode.
+ * 
+ * The program allows users to load a graph of nodes and edges, choose a route mode (driving, walking, or mixed),
+ * and compute the shortest path based on various parameters like avoiding certain nodes or segments, and 
+ * maximum walking time. The program also supports batch processing from an input file.
+ *
+*/
+
+/**
+ * @brief Displays the main menu for the user to choose an option.
+ */
 void displayMenu();
+
+/**
+ * @brief Loads a graph from a file, reading vertices and edges.
+ * @param g The graph object to populate with vertices and edges.
+ */
 void loadGraphFromFile(Graph<int> &g);
+
+/**
+ * @brief Finds and computes the route based on the user's input.
+ * @param g The graph to search for the route.
+ */
 void findRoute(Graph<int> &g);
+
+/**
+ * @brief Executes the batch mode, reading the configuration from an input file and computing the route.
+ * @param g The graph to process.
+ */
 void batchMode(Graph<int> &g);
 
+/**
+ * @brief Main program loop where the user interacts with the route planning tool.
+ * @return int Status code (0 for success).
+ */
 int main()
 {
     system("cls");
