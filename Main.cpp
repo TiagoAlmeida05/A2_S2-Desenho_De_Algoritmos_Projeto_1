@@ -6,6 +6,7 @@
 #include "Graph.h"
 #include "functions.h"
 #include "driving.h"
+#include "batchMode.h"
 #include <vector>
 
 using namespace std;
@@ -475,3 +476,4 @@ void restrictedRouteBM(Graph<int> &g, const int &source, const int &destination)
     }
     outputFile.close();
 }
+

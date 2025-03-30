@@ -96,7 +96,6 @@ void includeNode(Graph<int> &g, const int &source, const int &destination, strin
     }
 }
 
-
 void drivingMode(Graph<int> &g, const int &source, const int &destination) {
     vector<int> path1, path2;
     dijkstra(&g, source,0);
@@ -152,8 +151,8 @@ void approximateSolution(Graph<int> &g, const int &source, const int &destinatio
     double AproxSolTTime=INF,AproxSolwTime;
     int bestParkingNode = -1;
     int SecondBestParkingNode=-1;
-    cout << "Source: " << source << endl;
-    cout << "Destination: " << destination << endl;
+    cout << "Source:" << source << endl;
+    cout << "Destination:" << destination << endl;
     for (Vertex<int>* v : g.getVertexSet()) {
         if (v->hasPark() && v->getDist() < INF) { // Valid parking node
             int parkingNode = v->getInfo();
@@ -192,16 +191,16 @@ void approximateSolution(Graph<int> &g, const int &source, const int &destinatio
         }
             
     }
-    cout << "DrivingRoute1: ";
+    cout << "DrivingRoute1:";
     for (size_t i = 0; i < bestDrivingPath.size(); i++) {
         cout << bestDrivingPath[i];
         if (i != bestDrivingPath.size() - 1) cout << ",";
     }
     cout << "(" << bestTotalTime - bestWalkingTime << ")" << endl;
 
-    cout << "ParkingNode1: " << bestParkingNode << endl;
+    cout << "ParkingNode1:" << bestParkingNode << endl;
 
-    cout << "WalkingRoute1: ";
+    cout << "WalkingRoute1:";
     if (bestWalkingPath.empty()) cout << "none";
     else {
         for (size_t i = 0; i < bestWalkingPath.size(); i++) {
@@ -211,17 +210,17 @@ void approximateSolution(Graph<int> &g, const int &source, const int &destinatio
     }
     cout << "(" << bestWalkingTime << ")" << endl;
 
-    cout << "TotalTime1: " << bestTotalTime << endl;
-    cout << "DrivingRoute2: ";
+    cout << "TotalTime1:" << bestTotalTime << endl;
+    cout << "DrivingRoute2:";
     for (size_t i = 0; i < SecondbestDrivingPath.size(); i++) {
         cout << SecondbestDrivingPath[i];
         if (i != SecondbestDrivingPath.size() - 1) cout << ",";
     }
     cout << "(" << SecondbestTotalTime - SecondbestWalkingTime << ")" << endl;
 
-    cout << "ParkingNode2: " << SecondBestParkingNode << endl;
+    cout << "ParkingNode2:" << SecondBestParkingNode << endl;
 
-    cout << "WalkingRoute2: ";
+    cout << "WalkingRoute2:";
     if (SecondbestWalkingPath.empty()) cout << "none";
     else {
         for (size_t i = 0; i < SecondbestWalkingPath.size(); i++) {
@@ -231,7 +230,7 @@ void approximateSolution(Graph<int> &g, const int &source, const int &destinatio
     }
     cout << "(" << SecondbestWalkingTime << ")" << endl;
 
-    cout << "TotalTime2: " << SecondbestTotalTime << endl;
+    cout << "TotalTime2:" << SecondbestTotalTime << endl;
 }
 
 void drivingWalkingMode(Graph<int> &g, const int &source, const int &destination, string maxWT) {
@@ -270,16 +269,16 @@ void drivingWalkingMode(Graph<int> &g, const int &source, const int &destination
         }
     }
 
-    cout << "Source: " << source << endl;
+    cout << "Source:" << source << endl;
     cout << "Destination: " << destination << endl;
 
     if (bestParkingNode == -1) {
 
 
-        cout << "DrivingRoute: "<<endl;
-        cout << "ParkingNode: " <<endl;
-        cout << "WalkingRoute: "<<endl;
-        cout << "TotalTime: " <<endl;
+        cout << "DrivingRoute:"<<endl;
+        cout << "ParkingNode:" <<endl;
+        cout << "WalkingRoute:"<<endl;
+        cout << "TotalTime:" <<endl;
         cout << "Message: No possible route with max. walking time of " << maxWT << " minutes." << endl;
         cout <<endl;
         approximateSolution(g,source,destination);
@@ -287,16 +286,16 @@ void drivingWalkingMode(Graph<int> &g, const int &source, const int &destination
         return;
     }
 
-    cout << "DrivingRoute: ";
+    cout << "DrivingRoute:";
     for (size_t i = 0; i < bestDrivingPath.size(); i++) {
         cout << bestDrivingPath[i];
         if (i != bestDrivingPath.size() - 1) cout << ",";
     }
     cout << "(" << bestTotalTime - bestWalkingTime << ")" << endl;
 
-    cout << "ParkingNode: " << bestParkingNode << endl;
+    cout << "ParkingNode:" << bestParkingNode << endl;
 
-    cout << "WalkingRoute: ";
+    cout << "WalkingRoute:";
     if (bestWalkingPath.empty()) cout << "none";
     else {
         for (size_t i = 0; i < bestWalkingPath.size(); i++) {
@@ -306,5 +305,5 @@ void drivingWalkingMode(Graph<int> &g, const int &source, const int &destination
     }
     cout << "(" << bestWalkingTime << ")" << endl;
 
-    cout << "TotalTime: " << bestTotalTime << endl;
+    cout << "TotalTime:" << bestTotalTime << endl;
 }
