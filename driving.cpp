@@ -7,7 +7,7 @@
 
 using namespace std;
 
-void avoidNodesAndSegments(Graph<int> &g, string avoidN, string avoidS, const int &source, const int &destination) {
+void avoidNodesAndSegments(Graph<int> &g, string avoidN, string avoidS) {
     string temp, orig, dest;
     stringstream ss(avoidN);
     while (getline(ss, temp, ','))
@@ -149,7 +149,6 @@ void approximateSolution(Graph<int> &g, const int &source, const int &destinatio
     double bestTotalTime = INF, bestWalkingTime = -1;
     vector<int> SecondbestDrivingPath, SecondbestWalkingPath;
     double SecondbestTotalTime = INF, SecondbestWalkingTime = -1;
-    double AproxSolTTime=INF,AproxSolwTime;
     int bestParkingNode = -1;
     int SecondBestParkingNode=-1;
     cout << "Source: " << source << endl;
@@ -237,7 +236,6 @@ void approximateSolution(Graph<int> &g, const int &source, const int &destinatio
 void drivingWalkingMode(Graph<int> &g, const int &source, const int &destination, string maxWT) {
     vector<int> bestDrivingPath, bestWalkingPath;
     double bestTotalTime = INF, bestWalkingTime = -1;
-    double AproxSolTTime=INF,AproxSolwTime;
     int bestParkingNode = -1;
     int maxWalkingTime = stoi(maxWT);
 

@@ -106,6 +106,7 @@ public:
     void setReverse(Edge<T> *reverse);
     void setFlow(double flow);
 protected:
+    Vertex<T> *orig;
     Vertex<T> * dest; // destination vertex
     double dweight;   // edge weight, can also be used for capacity
     double wweight;
@@ -114,7 +115,6 @@ protected:
     bool selected = false;
 
     // used for bidirectional edges
-    Vertex<T> *orig;
     Edge<T> *reverse = nullptr;
 
     double flow; // for flow-related problems
