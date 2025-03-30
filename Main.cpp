@@ -69,7 +69,7 @@ void loadGraphFromFile(Graph<int> &g)
     string line;
     map<string, int> codeToId;
 
-    cout << "Enter File Name With Nods:  \n";
+    cout << "Enter File Name With Nodes:  \n";
     cin >> filename;
 
     ifstream inputfile1(filename);
@@ -169,12 +169,12 @@ void findRoute(Graph<int> &g)
         {
             if (includeN != "")
             {
-                avoidNodesAndSegments(g, avoidN, avoidS, source, destination);
+                avoidNodesAndSegments(g, avoidN, avoidS);
                 includeNode(g, source, destination, includeN);
             }
             else
             {
-                avoidNodesAndSegments(g, avoidN, avoidS, source, destination);
+                avoidNodesAndSegments(g, avoidN, avoidS);
                 restrictedRoute(g, source, destination);
             }
         }
@@ -196,7 +196,7 @@ void findRoute(Graph<int> &g)
             getline(cin, avoidS);
             cout << endl;
             if (avoidN != "" || avoidS != ""){
-                avoidNodesAndSegments(g, avoidN, avoidS, source, destination);
+                avoidNodesAndSegments(g, avoidN, avoidS);
                 drivingWalkingMode(g, source, destination, maxWT);
             }else{
                 drivingWalkingMode(g, source, destination, maxWT);
@@ -263,12 +263,12 @@ void batchMode(Graph<int> &g)
         {
             if (includeN != "")
             {
-                avoidNodesAndSegments(g, avoidN, avoidS, source, destination);
+                avoidNodesAndSegments(g, avoidN, avoidS);
                 includeNodeBM(g, source, destination, includeN);
             }
             else
             {
-                avoidNodesAndSegments(g, avoidN, avoidS, source, destination);
+                avoidNodesAndSegments(g, avoidN, avoidS);
                 restrictedRouteBM(g, source, destination);
             }
         }
@@ -282,7 +282,7 @@ void batchMode(Graph<int> &g)
         if (mode == "driving-walking")
         {
             if (avoidN != "" || avoidS != ""){
-                avoidNodesAndSegments(g, avoidN, avoidS, source, destination);
+                avoidNodesAndSegments(g, avoidN, avoidS);
                 drivingWalkingModeBM(g, source, destination, maxWT);
             }else{
                 drivingWalkingModeBM(g, source, destination, maxWT);

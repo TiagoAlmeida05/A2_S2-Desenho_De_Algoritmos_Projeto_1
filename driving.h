@@ -7,7 +7,7 @@
 
 using namespace std;
 
-void avoidNodesAndSegments(Graph<int> &g, string avoidN, string avoidS, const int &source, const int &destination);
+void avoidNodesAndSegments(Graph<int> &g, string avoidN, string avoidS);
 
 void drivingMode(Graph<int> &g, const int &source, const int &destination);
 
