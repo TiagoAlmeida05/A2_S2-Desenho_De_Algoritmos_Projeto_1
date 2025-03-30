@@ -68,7 +68,7 @@ void loadGraphFromFile(Graph<int> &g)
     string line;
     map<string, int> codeToId;
 
-    cout << "Enter File Name With Nods:  \n";
+    cout << "Enter File Name With Nodes:  \n";
     cin >> filename;
 
     ifstream inputfile1(filename);
