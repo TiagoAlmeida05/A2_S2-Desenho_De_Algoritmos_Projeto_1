@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include "Graph.h"
 #include "batchMode.h"
 #include "MutablePriorityQueue.h"
@@ -98,7 +99,7 @@ void includeNodeBM(Graph<int> &g, const int &source, const int &destination, str
     outputFile.close();
 }
 
-void drivingWalkingMode(Graph<int> &g, const int &source, const int &destination, string maxWT) {
+void drivingWalkingModeBM(Graph<int> &g, const int &source, const int &destination, string maxWT) {
     ofstream outputFile("output.txt");
     vector<int> bestDrivingPath, bestWalkingPath;
     double bestTotalTime = INF, bestWalkingTime = -1;
@@ -147,7 +148,7 @@ void drivingWalkingMode(Graph<int> &g, const int &source, const int &destination
         outputFile << "TotalTime:" <<endl;
         outputFile << "Message: No possible route with max. walking time of " << maxWT << " minutes." << endl;
         outputFile <<endl;
-        approximateSolution(g,source,destination);
+        approximateSolutionBM(g,source,destination, outputFile);
 
         return;
     }
@@ -201,8 +202,7 @@ void restrictedRouteBM(Graph<int> &g, const int &source, const int &destination)
     outputFile.close();
 }
 
-void approximateSolutionBM(Graph<int> &g, const int &source, const int &destination) {
-    ofstream outputFile("output.txt");
+void approximateSolutionBM(Graph<int> &g, const int &source, const int &destination, ofstream& outputFile) {
     vector<int> bestDrivingPath, bestWalkingPath;
     double bestTotalTime = INF, bestWalkingTime = -1;
     vector<int> SecondbestDrivingPath, SecondbestWalkingPath;
@@ -290,5 +290,4 @@ void approximateSolutionBM(Graph<int> &g, const int &source, const int &destinat
     outputFile << "(" << SecondbestWalkingTime << ")" << endl;
 
     outputFile << "TotalTime2:" << SecondbestTotalTime << endl;
-    outputFile.close();
 }

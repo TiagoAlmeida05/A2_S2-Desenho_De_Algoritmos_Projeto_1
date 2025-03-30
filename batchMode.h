@@ -15,5 +15,6 @@ void drivingWalkingModeBM(Graph<int> &g, const int &source, const int &destinati
 
 void restrictedRouteBM(Graph<int> &g, const int &source, const int &destination);
 
+void approximateSolutionBM(Graph<int> &g, const int &source, const int &destination, ofstream& outputFile);
 
 #endif

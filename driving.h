@@ -19,5 +19,4 @@ void drivingWalkingMode(Graph<int> &g, const int &source, const int &destination
 
 void approximateSolution(Graph<int> &g, const int &source, const int &destination);
 
-
 #endif
