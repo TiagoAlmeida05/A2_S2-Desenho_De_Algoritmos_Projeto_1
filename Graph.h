@@ -1,6 +1,7 @@
 // Original code by Gonçalo Leão
 // Updated by DA 2024/2025 Team
 
+
 #ifndef DA_TP_CLASSES_GRAPH
 #define DA_TP_CLASSES_GRAPH
 
@@ -18,50 +19,53 @@ class Edge;
 #define INF std::numeric_limits<double>::max()
 
 /************************* Vertex  **************************/
-
 template <class T>
 class Vertex {
 public:
     Vertex(T in);
     bool operator<(Vertex<T> & vertex) const; // // required by MutablePriorityQueue
 
+    /// @name Getters
+    /// Functions that retrieve vertex attributes.
+    ///@{
     T getInfo() const;
     std::vector<Edge<T> *> getAdj() const;
     bool isVisited() const;
     bool isProcessing() const;
     unsigned int getIndegree() const;
-    double getDist() const;
-    double getWDist() const;
+    double getDist() const;  //added for the project
+    double getWDist() const; //added for the project
     Edge<T> *getPath() const;
-    Edge<T> *getWPath() const;
+    Edge<T> *getWPath() const; //added for the project
     std::vector<Edge<T> *> getIncoming() const;
+    int getLow() const;
+    int getNum() const;
+    bool hasPark() const; //added for the project
+    std::string getCode() const; //added for the project
+    ///@}
 
+    /// @name Setters
+    /// Functions that modify vertex attributes.
+    ///@{
+    void setPark(bool value); //added for the project
+    void setCode(std::string value); //added for the project
+    void setLow(int value);
+    void setNum(int value);    
     void setInfo(T info);
     void setVisited(bool visited);
     void setProcessing(bool processing);
-
-    int getLow() const;
-    void setLow(int value);
-    int getNum() const;
-    void setNum(int value);
-    
-    bool hasPark() const;
-    std::string getCode() const;
-    
-    void setPark(bool value);
-    void setCode(std::string value);
-
-
     void setIndegree(unsigned int indegree);
-    void setDist(double dist);
-    void setWDist(double wdist);
+    void setDist(double dist); //added for the project
+    void setWDist(double wdist); //added for the project
     void setPath(Edge<T> *path);
-    void setWPath(Edge<T> *wpath);
+    void setWPath(Edge<T> *wpath); //added for the project
+    ///@}
+    
     Edge<T> * addEdge(Vertex<T> *dest, double dw, double ww);
     bool removeEdge(T in);
     void removeOutgoingEdges();
 
-    bool walking=false;
+    bool walking=false; //added for the project
 
     friend class MutablePriorityQueue<Vertex>;
 protected:
@@ -73,12 +77,12 @@ protected:
     bool processing = false; // used by isDAG (in addition to the visited attribute)
     int low = -1, num = -1; // used by SCC Tarjan
     unsigned int indegree; // used by topsort
-    double dist = 0;
-    double wdist=0;
+    double dist = 0; //added for the project
+    double wdist=0; //added for the project
     Edge<T> *path = nullptr;
     Edge<T> *wpath = nullptr;
-    std :: string code = "";
-    bool park = false;
+    std :: string code = ""; //added for the project
+    bool park = false; //added for the project
 
     std::vector<Edge<T> *> incoming; // incoming edges
 
@@ -94,22 +98,28 @@ class Edge {
 public:
     Edge(Vertex<T> *orig, Vertex<T> *dest, double dw,double ww);
 
+    /// @name Getters
+    ///@{
     Vertex<T> * getDest() const;
-    double getDWeight() const;
+    double getDWeight() const; //added for the project
     bool isSelected() const;
     Vertex<T> * getOrig() const;
     Edge<T> *getReverse() const;
-    double getFlow() const;
-    double getWWeight() const;
+    double getFlow() const; 
+    double getWWeight() const; //added for the project
+    ///@}
 
+    /// @name Setters
+    ///@{
     void setSelected(bool selected);
     void setReverse(Edge<T> *reverse);
     void setFlow(double flow);
+    ///@}
 protected:
     Vertex<T> *orig;
     Vertex<T> * dest; // destination vertex
-    double dweight;   // edge weight, can also be used for capacity
-    double wweight;
+    double dweight;   //added for the project
+    double wweight;   //added for the project
 
     // auxiliary fields
     bool selected = false;
